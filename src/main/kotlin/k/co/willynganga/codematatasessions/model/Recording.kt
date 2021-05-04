@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "recordings")
-data class Recordings(
+data class Recording(
     @Id
     val id: Long,
     val title: String,

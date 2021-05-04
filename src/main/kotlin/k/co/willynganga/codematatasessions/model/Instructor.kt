@@ -13,5 +13,5 @@ data class Instructor(
     val email: String,
     val password: String,
     @OneToMany(mappedBy = "instructor")
-    val sessions: Set<Recordings>
+    val sessions: Set<Recording>
 )
