@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service
 @Service
 open class RecordingService(private val repository: RecordingsRepository) {
 
-    fun findAllRecorings(): List<Recording> {
+    fun findAllRecordings(): List<Recording> {
         return repository.findAll();
     }
 
-    fun findRecordingById(uuid: String): Recording? {
-        return repository.findById(uuid)
+    fun findRecordingById(id: Long): Recording? {
+        val recording = repository.findById(id)
+        return if (recording.isPresent) recording.get() else null
     }
 
     fun findRecordingByTitle(title: String): Recording? {

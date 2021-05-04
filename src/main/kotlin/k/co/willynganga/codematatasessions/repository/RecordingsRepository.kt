@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface RecordingsRepository : JpaRepository<Recording, Long> {
 
-    fun findById(id: String): Recording?
-
     fun findByTitle(title: String): Recording?
 
 }
