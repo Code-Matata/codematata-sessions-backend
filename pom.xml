@@ -54,6 +54,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito.kotlin</groupId>
+			<artifactId>mockito-kotlin</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.wickie73</groupId>
+			<artifactId>mockito4kotlin-annotation</artifactId>
+			<version>0.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
