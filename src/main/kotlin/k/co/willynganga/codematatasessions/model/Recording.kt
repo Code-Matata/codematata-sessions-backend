@@ -1,6 +1,8 @@
 package k.co.willynganga.codematatasessions.model
 
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
 @Table(name = "recordings")
@@ -12,7 +14,5 @@ data class Recording(
     val videoUrl: String,
     val imageUrl: String,
     val date: String,
-    @ManyToOne
-    @JoinColumn(name = "instructor_uuid")
-    val instructor: Instructor
+    val instructor: String
 )

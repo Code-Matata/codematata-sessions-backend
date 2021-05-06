@@ -1,6 +1,9 @@
 package k.co.willynganga.codematatasessions.model
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
 @Table(name = "instructors")
@@ -11,7 +14,5 @@ data class Instructor(
     val username: String,
     @Column(unique = true)
     val email: String,
-    val password: String,
-    @OneToMany(mappedBy = "instructor")
-    val sessions: Set<Recording>
+    val password: String
 )
