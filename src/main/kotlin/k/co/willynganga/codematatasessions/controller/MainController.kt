@@ -1,5 +1,6 @@
 package k.co.willynganga.codematatasessions.controller
 
+import k.co.willynganga.codematatasessions.model.Instructor
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.model.Student
 import k.co.willynganga.codematatasessions.service.InstructorService
@@ -39,5 +40,31 @@ open class MainController(
     @GetMapping("/student/uuid")
     fun getStudentByUuid(@RequestParam uuid: String): Student? {
         return studentService.findStudentByUuid(uuid)
+    }
+
+    //instructor
+    @GetMapping("/instructor/all")
+    fun getAllInstructors(): List<Instructor> {
+        return instructorService.findAllInstructors()
+    }
+
+    @PostMapping("/instructor/add")
+    fun addInstructor(@RequestBody instructor: Instructor): Response {
+        return instructorService.insertInstructor(instructor)
+    }
+
+    @GetMapping("/instructor")
+    fun getInstructorByEmail(@RequestParam email: String): Instructor? {
+        return instructorService.findInstructorByEmail(email)
+    }
+
+    @GetMapping("/instructor/uuid/{uuid}")
+    fun getInstructorByUuid(@PathVariable uuid: String): Instructor? {
+        return instructorService.findInstructorByUuid(uuid)
+    }
+
+    @GetMapping("/instructor/username/{username}")
+    fun getInstructorByUsername(@PathVariable username: String): Instructor? {
+        return instructorService.findInstructorByUsername(username)
     }
 }
