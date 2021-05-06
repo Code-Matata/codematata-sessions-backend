@@ -27,8 +27,7 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "849fd6dd-5ae1-47f0-9640-b3cb34a9392a",
             "test",
             "test@test.com",
-            "password",
-            emptySet()
+            "password"
         )
         val recording = Recording(
             1,
@@ -37,7 +36,7 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            instructor
+            "test"
         )
         instructorRepository.save(instructor)
         underTest.save(recording)
@@ -52,13 +51,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
     fun `it should not find recording with invalid title`() {
         //given
         val title = "Spring Boot"
-        val instructor = Instructor(
-            "849fd6dd-5ae1-47f0-9640-b3cb34a9392a",
-            "test",
-            "test@test.com",
-            "password",
-            emptySet()
-        )
         val recording = Recording(
             1,
             title,
@@ -66,14 +58,36 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            instructor
+            "test"
         )
-        instructorRepository.save(instructor)
         underTest.save(recording)
         //when
         val exists = underTest.findByTitle("spring boot")
 
         //then
         assertThat(exists).isNull()
+    }
+
+    @Test
+    fun `find recording using instructor username`() {
+        //given
+        val username = "test"
+        val recording = Recording(
+            1,
+            "Spring Boot",
+            "An introduction to spring boot and Kotlin",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "https://youtu.be/Geq60OVyBPg",
+            "06-05-2021",
+            username
+        )
+
+        //when
+        underTest.saveAndFlush(recording)
+
+        //then
+        val exists = underTest.findByInstructor(username)
+
+        assertThat(exists).isNotNull
     }
 }

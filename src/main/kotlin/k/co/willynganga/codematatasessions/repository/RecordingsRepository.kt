@@ -7,4 +7,6 @@ interface RecordingsRepository : JpaRepository<Recording, Long> {
 
     fun findByTitle(title: String): Recording?
 
+    fun findByInstructor(username: String): Recording?
+
 }

@@ -136,6 +136,6 @@ open class StudentRepositoryTest @Autowired constructor(private val underTest: S
         }
 
         //then
-        assertThat(list.size < 2).isTrue()
+        assertThat(list.size < 2).isTrue
     }
 }
