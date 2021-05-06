@@ -5,7 +5,6 @@ import k.co.willynganga.codematatasessions.repository.InstructorRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
@@ -58,7 +57,6 @@ internal class InstructorServiceTest {
     }
 
     @Test
-    @Disabled
     fun `will not add instructor when email or username is taken`() {
         //given
         val instructor = Instructor(
@@ -79,7 +77,6 @@ internal class InstructorServiceTest {
     }
 
     @Test
-    @Disabled
     fun `can find instructor with email`() {
         //given
         val email = "test@test.com"
@@ -112,7 +109,6 @@ internal class InstructorServiceTest {
     }
 
     @Test
-    @Disabled
     fun `can find instructor valid uuid`() {
         //given
         val uuid = "7f647610-5929-45e6-a1c6-4547e7918c36"
@@ -122,7 +118,7 @@ internal class InstructorServiceTest {
 
         //then
         val argumentCaptor = argumentCaptor<String>()
-        verify(instructorRepository).findByUsername(argumentCaptor.capture())
+        verify(instructorRepository).findByUuid(argumentCaptor.capture())
         val capturedUsername = argumentCaptor.firstValue
 
         assertEquals(capturedUsername, uuid)
