@@ -3,6 +3,7 @@ package k.co.willynganga.codematatasessions.controller
 import com.google.gson.Gson
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import k.co.willynganga.codematatasessions.model.Instructor
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.model.Student
 import k.co.willynganga.codematatasessions.service.InstructorService
@@ -186,5 +187,165 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             .andExpect(jsonPath("\$.uuid").value(student.uuid))
             .andExpect(jsonPath("\$.email").value(student.email))
             .andExpect(jsonPath("\$.username").value(student.username))
+    }
+
+    @Test
+    fun `can get all instructors`() {
+        //given
+        val instructor = Instructor(
+            "8bf81f1a-270d-46d3-98bf-52b05f58eb4a",
+            "test",
+            "test@test.com",
+            "password"
+        )
+
+        //when
+        every { instructorService.findAllInstructors() } returns listOf(instructor)
+
+        //then
+        mockMvc.perform(get("/api/v1/instructor/all"))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$[0].uuid").value(instructor.uuid))
+            .andExpect(jsonPath("\$[0].email").value(instructor.email))
+            .andExpect(jsonPath("\$[0].username").value(instructor.username))
+    }
+
+    @Test
+    fun `can register instructor`() {
+        //given
+        val instructor = Instructor(
+            "8bf81f1a-270d-46d3-98bf-52b05f58eb4a",
+            "test",
+            "test@test.com",
+            "password"
+        )
+        val body = Gson().toJson(instructor)
+
+        //when
+        every { instructorService.insertInstructor(instructor) } returns Response(
+            0,
+            STATUS.SUCCESS,
+            "Successfully added recording"
+        )
+
+        //then
+        mockMvc.perform(
+            post("/api/v1/instructor/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(body)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.requestCode").value(0))
+            .andExpect(jsonPath("\$.message").value("Successfully added recording"))
+    }
+
+    @Test
+    fun `cannot add instructor with email or username that is taken`() {
+        //given
+        val instructor = Instructor(
+            "8bf81f1a-270d-46d3-98bf-52b05f58eb4a",
+            "test",
+            "test@test.com",
+            "password"
+        )
+        val body = Gson().toJson(instructor)
+
+        //when
+        every { instructorService.insertInstructor(instructor) } returns Response(
+            1,
+            STATUS.FAIL,
+            "Email and username need to be unique"
+        )
+
+        //then
+        mockMvc.perform(
+            post("/api/v1/instructor/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(body)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.requestCode").value(1))
+            .andExpect(jsonPath("\$.message").value("Email and username need to be unique"))
+    }
+
+    @Test
+    fun `can get instructor with valid email`() {
+        //given
+        val email = "test@test.com"
+        val instructor = Instructor(
+            "8bf81f1a-270d-46d3-98bf-52b05f58eb4a",
+            "test",
+            email,
+            "password"
+        )
+
+        //when
+        every { instructorService.findInstructorByEmail(email) } returns instructor
+
+        //then
+        mockMvc.perform(
+            get("/api/v1/instructor")
+                .param("email", email)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.uuid").value(instructor.uuid))
+            .andExpect(jsonPath("\$.email").value(instructor.email))
+            .andExpect(jsonPath("\$.username").value(instructor.username))
+    }
+
+    @Test
+    fun `can get instructor with valid uuid`() {
+        //given
+        val uuid = "8bf81f1a-270d-46d3-98bf-52b05f58eb4a"
+        val instructor = Instructor(
+            uuid,
+            "test",
+            "test@test.com",
+            "password"
+        )
+
+        //when
+        every { instructorService.findInstructorByUuid(uuid) } returns instructor
+
+        //then
+        mockMvc.perform(
+            get("/api/v1/instructor/uuid/$uuid")
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.uuid").value(instructor.uuid))
+            .andExpect(jsonPath("\$.email").value(instructor.email))
+            .andExpect(jsonPath("\$.username").value(instructor.username))
+    }
+
+    @Test
+    fun `can get instructor with valid username`() {
+        //given
+        val username = "test"
+        val instructor = Instructor(
+            "8bf81f1a-270d-46d3-98bf-52b05f58eb4a",
+            username,
+            "test@test.com",
+            "password"
+        )
+
+        //when
+        every { instructorService.findInstructorByUsername(username) } returns instructor
+
+        //then
+        mockMvc.perform(
+            get("/api/v1/instructor/username/$username")
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.uuid").value(instructor.uuid))
+            .andExpect(jsonPath("\$.email").value(instructor.email))
+            .andExpect(jsonPath("\$.username").value(instructor.username))
     }
 }
