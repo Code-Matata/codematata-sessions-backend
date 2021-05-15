@@ -20,7 +20,7 @@ open class MainController(
     //Student
     @GetMapping("student/all")
     fun getAllStudents(): List<Student> {
-        return studentService.findAllStudents();
+        return studentService.findAllStudents()
     }
 
     @PostMapping("/student/add")
@@ -85,23 +85,24 @@ open class MainController(
         return recordingService.findRecordingById(id)
     }
 
-    @GetMapping("/recording/")
+    @GetMapping("/recording/by-title")
     fun getRecordingByTitle(@RequestParam title: String): Recording? {
         return recordingService.findRecordingByTitle(title)
     }
 
-    @GetMapping("/recording/")
-    fun getRecordingByInstructorUsername(@RequestParam username: String): Recording? {
+    @GetMapping("/recording/by-instructor")
+    fun getRecordingByInstructorUsername(@RequestParam username: String): List<Recording> {
         return recordingService.findRecordingByInstructorUsername(username)
     }
 
-    @GetMapping("/recording/")
-    fun getRecordingByDate(date: String): List<Recording> {
+    @GetMapping("/recording/by-date")
+    fun getRecordingByDate(@RequestParam("date") date: String): List<Recording> {
         return recordingService.findRecordingByDate(date)
     }
 
-    @GetMapping("/recording/")
-    fun getRecordingByTitleAndString(title: String, date: String): List<Recording> {
+    @GetMapping("/recording/by-title-and-date")
+    fun getRecordingByTitleAndString(@RequestParam("title") title: String,
+                                     @RequestParam("date") date: String): List<Recording> {
         return recordingService.findRecordingByTitleAndDate(title, date)
     }
 }
