@@ -29,7 +29,7 @@ open class RecordingService(
         return repository.findByTitle(title)
     }
 
-    fun findRecordingByInstructorUsername(username: String): Recording? {
+    fun findRecordingByInstructorUsername(username: String): List<Recording> {
         return repository.findByInstructor(username)
     }
 
