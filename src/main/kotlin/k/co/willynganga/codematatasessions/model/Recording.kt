@@ -1,14 +1,13 @@
 package k.co.willynganga.codematatasessions.model
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "recordings")
 data class Recording(
     @Id
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
     val title: String,
     val description: String,
     val videoUrl: String,
