@@ -32,4 +32,12 @@ open class RecordingService(
     fun findRecordingByInstructorUsername(username: String): Recording? {
         return repository.findByInstructor(username)
     }
+
+    fun findRecordingByDate(date: String): List<Recording> {
+        return repository.findByDate(date)
+    }
+
+    fun findRecordingByTitleAndDate(title: String, date: String): List<Recording> {
+        return repository.findByTitleAndDate(title, date)
+    }
 }
