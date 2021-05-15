@@ -1,6 +1,7 @@
 package k.co.willynganga.codematatasessions.controller
 
 import k.co.willynganga.codematatasessions.model.Instructor
+import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.model.Student
 import k.co.willynganga.codematatasessions.service.InstructorService
@@ -66,5 +67,41 @@ open class MainController(
     @GetMapping("/instructor/username/{username}")
     fun getInstructorByUsername(@PathVariable username: String): Instructor? {
         return instructorService.findInstructorByUsername(username)
+    }
+
+    //Recording
+    @GetMapping("/recording/all")
+    fun getAllRecordings(): List<Recording> {
+        return recordingService.findAllRecordings()
+    }
+
+    @PostMapping("/recording/add")
+    fun addRecording(@RequestBody recording: Recording): Response {
+        return recordingService.addRecording(recording)
+    }
+
+    @GetMapping("/recording/{id}")
+    fun getRecordingById(@PathVariable id: Long): Recording? {
+        return recordingService.findRecordingById(id)
+    }
+
+    @GetMapping("/recording/")
+    fun getRecordingByTitle(@RequestParam title: String): Recording? {
+        return recordingService.findRecordingByTitle(title)
+    }
+
+    @GetMapping("/recording/")
+    fun getRecordingByInstructorUsername(@RequestParam username: String): Recording? {
+        return recordingService.findRecordingByInstructorUsername(username)
+    }
+
+    @GetMapping("/recording/")
+    fun getRecordingByDate(date: String): List<Recording> {
+        return recordingService.findRecordingByDate(date)
+    }
+
+    @GetMapping("/recording/")
+    fun getRecordingByTitleAndString(title: String, date: String): List<Recording> {
+        return recordingService.findRecordingByTitleAndDate(title, date)
     }
 }
