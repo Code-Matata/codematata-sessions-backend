@@ -3,6 +3,7 @@ package k.co.willynganga.codematatasessions.repository
 import k.co.willynganga.codematatasessions.model.Instructor
 import k.co.willynganga.codematatasessions.model.Recording
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -89,5 +90,99 @@ open class RecordingsRepositoryTest @Autowired constructor(
         val exists = underTest.findByInstructor(username)
 
         assertThat(exists).isNotNull
+    }
+
+    @Test
+    fun `it should find recordings by date`() {
+        //given
+        val date = "06-05-2021"
+        val recording = Recording(
+            1,
+            "Spring Boot",
+            "An introduction to spring boot and Kotlin",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "https://youtu.be/Geq60OVyBPg",
+            date,
+            "test"
+        )
+
+        //when
+        underTest.saveAndFlush(recording)
+
+        //then
+        val exists = underTest.findByDate(date)
+
+        assertEquals(exists, listOf(recording))
+    }
+
+    @Test
+    fun `it should not find recordings with invalid date`() {
+        //given
+        val date = "12-12-2020"
+        val recording = Recording(
+            1,
+            "Spring Boot",
+            "An introduction to spring boot and Kotlin",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "https://youtu.be/Geq60OVyBPg",
+            "2021-05-06",
+            "test"
+        )
+
+        //when
+        underTest.saveAndFlush(recording)
+
+        //then
+        val exists = underTest.findByDate(date)
+
+        assertThat(exists).isEmpty()
+    }
+
+    @Test
+    fun `it should find recordings by title and date`() {
+        //given
+        val date = "06-05-2021"
+        val title = "Spring Boot"
+        val recording = Recording(
+            1,
+            title,
+            "An introduction to spring boot and Kotlin",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "https://youtu.be/Geq60OVyBPg",
+            date,
+            "test"
+        )
+
+        //when
+        underTest.saveAndFlush(recording)
+
+        //then
+        val exists = underTest.findByTitleAndDate(title, date)
+
+        assertEquals(exists, listOf(recording))
+    }
+
+    @Test
+    fun `it should not find recordings with invalid title and date`() {
+        //given
+        val date = "06-05-20211"
+        val title = "spring boot"
+        val recording = Recording(
+            1,
+            "Spring Boot",
+            "An introduction to spring boot and Kotlin",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "https://youtu.be/Geq60OVyBPg",
+            "06-05-2021",
+            "test"
+        )
+
+        //when
+        underTest.saveAndFlush(recording)
+
+        //then
+        val exists = underTest.findByTitleAndDate(title, date)
+
+        assertThat(exists).isEmpty()
     }
 }
