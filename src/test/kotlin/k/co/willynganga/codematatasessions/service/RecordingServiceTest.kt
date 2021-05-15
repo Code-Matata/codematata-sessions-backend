@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.argumentCaptor
 
 @ExtendWith(MockitoExtension::class)
 internal class RecordingServiceTest {
@@ -100,5 +101,41 @@ internal class RecordingServiceTest {
         val capturedRecording = argumentCaptor.value
 
         assertEquals(capturedRecording, recording)
+    }
+
+    @Test
+    fun `can find recordings by date`() {
+        //given
+        val date = "2021-05-15"
+
+        underTest.findRecordingByDate(date)
+
+        //when
+        val argumentCaptor = argumentCaptor<String>()
+        verify(recordingsRepository).findByDate(argumentCaptor.capture())
+
+        //then
+        val capturedDate = argumentCaptor.firstValue
+        assertEquals(capturedDate, date)
+    }
+
+    @Test
+    fun `can find recordings by title and date`() {
+        //given
+        val date = "2021-05-15"
+        val title = "spring boot"
+
+        underTest.findRecordingByTitleAndDate(title, date)
+
+        //when
+        val argumentCaptor = argumentCaptor<String>()
+        verify(recordingsRepository).findByTitleAndDate(argumentCaptor.capture(), argumentCaptor.capture())
+
+        //then
+        val capturedTitle = argumentCaptor.firstValue
+        val capturedDate = argumentCaptor.secondValue
+
+        assertEquals(capturedTitle, title)
+        assertEquals(capturedDate, date)
     }
 }
