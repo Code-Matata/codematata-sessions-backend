@@ -14,3 +14,12 @@ spring:
     username: willyngash
     password: admin254
     platform: postgres
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 974739320522-qfvnsmhq94gsk95a374te7uscv0gr3uv.apps.googleusercontent.com
+            clientSecret: WK5fU7HfdQ2-f2q-Aq8_hLTX
+            scope:
+              - profile
