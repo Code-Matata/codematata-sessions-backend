@@ -1,6 +1,8 @@
 package k.co.willynganga.codematatasessions.config
 
+import k.co.willynganga.codematatasessions.security.RestAuthenticationEntryPoint
 import k.co.willynganga.codematatasessions.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
+import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationSuccessHandler
 import k.co.willynganga.codematatasessions.service.CustomOAuth2UserService
 import org.slf4j.LoggerFactory
@@ -21,7 +23,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 )
 open class WebSecurityConfig constructor(
     private val customOAuth2UserService: CustomOAuth2UserService,
-    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler
+    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oAuth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler
 ) : WebSecurityConfigurerAdapter() {
 
     private val logger = LoggerFactory.getLogger(WebSecurityConfig::class.java)
@@ -42,12 +45,16 @@ open class WebSecurityConfig constructor(
                 .disable()
             .authorizeRequests()
             .antMatchers("/oauth/**", "/oauth2/**").permitAll()
+            .antMatchers("/").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
                 .disable()
             .httpBasic()
                 .disable()
+            .exceptionHandling()
+                .authenticationEntryPoint(RestAuthenticationEntryPoint())
+                .and()
             .oauth2Login()
                 .authorizationEndpoint()
                     .baseUri("/oauth2/authorize")
@@ -57,5 +64,6 @@ open class WebSecurityConfig constructor(
                     .userService(customOAuth2UserService)
                     .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
     }
 }
