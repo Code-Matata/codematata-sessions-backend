@@ -1,10 +1,8 @@
 package k.co.willynganga.codematatasessions.controller
 
-import k.co.willynganga.codematatasessions.model.Instructor
-import k.co.willynganga.codematatasessions.model.Recording
-import k.co.willynganga.codematatasessions.model.Response
-import k.co.willynganga.codematatasessions.model.Student
+import k.co.willynganga.codematatasessions.model.*
 import k.co.willynganga.codematatasessions.service.InstructorService
+import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
 import k.co.willynganga.codematatasessions.service.StudentService
 import org.springframework.web.bind.annotation.*
@@ -14,7 +12,8 @@ import org.springframework.web.bind.annotation.*
 open class MainController(
     private val studentService: StudentService,
     private val instructorService: InstructorService,
-    private val recordingService: RecordingService
+    private val recordingService: RecordingService,
+    private val oAuthUserService: OAuthUserService
 ) {
 
     //Student
@@ -105,4 +104,9 @@ open class MainController(
                                      @RequestParam("date") date: String): List<Recording> {
         return recordingService.findRecordingByTitleAndDate(title, date)
     }
+
+    //OAuthUser
+
+    @GetMapping("/oauth-user/all")
+    fun getAllOAuthUsers(): List<OAuthUser> = oAuthUserService.findAllUsers()
 }
