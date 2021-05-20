@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### credentials ###
-app.yml
+application-local.yml
