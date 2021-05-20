@@ -4,8 +4,8 @@ spring:
       client:
         registration:
           google:
-            clientId: 974739320522-qfvnsmhq94gsk95a374te7uscv0gr3uv.apps.googleusercontent.com
-            clientSecret: dgMpfYZUA5jKDmIkBCQ_Xj7_
+            clientId: { YOUR_CLIENT_ID_HERE }
+            clientSecret: { YOUR_CLIENT_SECRET_HERE }
             redirectUrl: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - email
