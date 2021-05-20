@@ -85,19 +85,21 @@ class OAuth2AuthenticationSuccessHandler(
     }
 
     private fun isAuthorizedRedirectUri(redirectUri: String?): Boolean {
-        val clientRedirectUri = URI.create(redirectUri!!)
+        val clientRedirect =  redirectUri?.let { uri ->
+            val clientRedirectUri = URI.create(uri)
+            clientRedirectUri
+        }
 
         return appProperties.getOAuth2().authorizedRedirectUris
             .any { authorizedUri ->
                 val uri = URI.create(authorizedUri)
 
-                if (uri.host == clientRedirectUri.host
-                    && uri.port == clientRedirectUri.port
+                if (uri.host == clientRedirect?.host
+                    && uri.port == clientRedirect?.port
                 ) {
                     return true
                 }
                 return false
             }
-
     }
 }
