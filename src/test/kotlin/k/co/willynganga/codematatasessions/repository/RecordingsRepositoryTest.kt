@@ -18,6 +18,7 @@ open class RecordingsRepositoryTest @Autowired constructor(
     @BeforeEach
     internal fun setUp() {
         underTest.deleteAll()
+        underTest.flush()
     }
 
     @Test
@@ -31,7 +32,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "password"
         )
         val recording = Recording(
-            1,
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -53,7 +53,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         //given
         val title = "Spring Boot"
         val recording = Recording(
-            1,
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -74,7 +73,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         //given
         val username = "test"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -97,7 +95,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         //given
         val date = "06-05-2021"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -120,7 +117,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         //given
         val date = "12-12-2020"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -144,7 +140,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         val date = "06-05-2021"
         val title = "Spring Boot"
         val recording = Recording(
-            1,
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
@@ -168,7 +163,6 @@ open class RecordingsRepositoryTest @Autowired constructor(
         val date = "06-05-20211"
         val title = "spring boot"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",

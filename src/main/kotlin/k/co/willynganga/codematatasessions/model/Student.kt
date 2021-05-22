@@ -1,6 +1,5 @@
 package k.co.willynganga.codematatasessions.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -15,7 +14,6 @@ data class Student(
     val username: String,
     @Column(unique = true)
     val email: String,
-    @JsonIgnore
     val password: String,
     val avatar: String = ""
 )
