@@ -45,7 +45,10 @@ open class WebSecurityConfig constructor(
                 .disable()
             .authorizeRequests()
             .antMatchers("/oauth/**", "/oauth2/**").permitAll()
-            .antMatchers("/").permitAll()
+            .antMatchers("/",
+                "/api/v1/instructor/add",
+                "/api/v1/student/add"
+            ).permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
