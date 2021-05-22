@@ -85,14 +85,13 @@ internal class RecordingServiceTest {
     fun `can add recording`() {
         //given
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            "test"
-        )
+            "test",
+            )
         underTest.addRecording(recording)
 
         //when

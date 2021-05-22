@@ -7,12 +7,13 @@ import k.co.willynganga.codematatasessions.model.Instructor
 import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.model.Student
-import k.co.willynganga.codematatasessions.service.InstructorService
-import k.co.willynganga.codematatasessions.service.RecordingService
-import k.co.willynganga.codematatasessions.service.StudentService
+import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
+import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationSuccessHandler
+import k.co.willynganga.codematatasessions.service.*
 import k.co.willynganga.codematatasessions.util.STATUS
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -21,7 +22,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebMvcTest
+@AutoConfigureMockMvc(addFilters = false)
 internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
+
+    @MockkBean
+    private lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockkBean
+    private lateinit var oAuth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler
+    @MockkBean
+    private lateinit var oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler
+    @MockkBean
+    private lateinit var oAuthUserService: OAuthUserService
 
     @MockkBean
     private lateinit var studentService: StudentService
@@ -267,6 +278,7 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(body)
+                .characterEncoding("utf-8")
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -354,14 +366,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     fun `can get all recordings`() {
         //given
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            "Jane Doe"
-        )
+            "Jane Doe",
+            1,
+            )
 
         //when
         every { recordingService.findAllRecordings() } returns listOf(recording)
@@ -380,14 +392,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     fun `can add a recording`() {
         //given
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            "Jane Doe"
-        )
+            "Jane Doe",
+            1
+            )
         val body = Gson().toJson(recording)
         //when
         every { recordingService.addRecording(recording) } returns Response(
@@ -414,14 +426,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         //given
         val id: Long = 1
         val recording = Recording(
-            id,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            "Jane Doe"
-        )
+            "Jane Doe",
+            id
+            )
 
         //when
         every { recordingService.findRecordingById(id) } returns recording
@@ -441,14 +453,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         //given
         val title = "Spring Boot"
         val recording = Recording(
-            1,
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            "Jane Doe"
-        )
+            "Jane Doe",
+            1,
+            )
 
         //when
         every { recordingService.findRecordingByTitle(title) } returns recording
@@ -469,14 +481,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         //given
         val username = "Jane Doe"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             "06-05-2021",
-            username
-        )
+            username,
+            1,
+            )
 
         //when
         every { recordingService.findRecordingByInstructorUsername(username) } returns  listOf(recording)
@@ -497,14 +509,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         //given
         val date = "06-05-2021"
         val recording = Recording(
-            1,
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             date,
-            "test"
-        )
+            "test",
+            1,
+            )
 
         //when
         every { recordingService.findRecordingByDate(date) } returns listOf(recording)
@@ -526,13 +538,13 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         val date = "06-05-2021"
         val title = "Spring Boot"
         val recording = Recording(
-            1,
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "https://youtu.be/Geq60OVyBPg",
             date,
-            "test"
+            "test",
+            1
         )
 
         //when
