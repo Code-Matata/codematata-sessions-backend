@@ -3,15 +3,16 @@
  */
 
 plugins {
-    java
-    `maven-publish`
+    id("org.springframework.boot") version "2.4.5"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    kotlin("jvm") version "1.4.32"
+    kotlin("plugin.spring") version "1.4.32"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.4.32"
+
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -23,14 +24,15 @@ dependencies {
     implementation("org.mockito.kotlin:mockito-kotlin:3.1.0")
     implementation("io.github.wickie73:mockito4kotlin-annotation:0.5.0")
     implementation("com.google.code.gson:gson:2.8.5")
+    implementation("org.jetbrains.kotlin:kotlin-noarg:1.4.32")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client:2.4.5")
-    implementation("org.springframework.security:spring-security-test:5.4.6")
     implementation("io.jsonwebtoken:jjwt:0.5.1")
     runtimeOnly("org.postgresql:postgresql:42.2.19")
     testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.4.5")
+    testImplementation("org.springframework.security:spring-security-test:5.4.6")
 }
 
 group = "k.co.willynganga"
@@ -38,12 +40,15 @@ version = "0.0.1-SNAPSHOT"
 description = "codematata-sessions"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "11"
     }
 }
 
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
+
+apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
