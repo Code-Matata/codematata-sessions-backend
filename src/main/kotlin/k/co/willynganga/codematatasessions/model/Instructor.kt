@@ -10,12 +10,11 @@ import javax.persistence.Table
 @Table(name = "instructors")
 data class Instructor(
     @Id
-    val uuid: String,
+    var uuid: String,
     @Column(unique = true)
-    val username: String,
+    var username: String,
     @Column(unique = true)
-    val email: String,
-    @JsonIgnore
-    val password: String,
-    val avatar: String = ""
+    var email: String,
+    var password: String,
+    var avatar: String = ""
 )
