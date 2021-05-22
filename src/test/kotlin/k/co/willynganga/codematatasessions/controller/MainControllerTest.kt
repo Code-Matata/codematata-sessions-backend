@@ -7,9 +7,13 @@ import k.co.willynganga.codematatasessions.model.Instructor
 import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.model.Student
+import k.co.willynganga.codematatasessions.security.oauth2.CustomOAuth2UserService
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationSuccessHandler
-import k.co.willynganga.codematatasessions.service.*
+import k.co.willynganga.codematatasessions.service.InstructorService
+import k.co.willynganga.codematatasessions.service.OAuthUserService
+import k.co.willynganga.codematatasessions.service.RecordingService
+import k.co.willynganga.codematatasessions.service.StudentService
 import k.co.willynganga.codematatasessions.util.STATUS
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

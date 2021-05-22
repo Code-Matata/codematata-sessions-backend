@@ -1,10 +1,10 @@
 package k.co.willynganga.codematatasessions.config
 
 import k.co.willynganga.codematatasessions.security.RestAuthenticationEntryPoint
+import k.co.willynganga.codematatasessions.security.oauth2.CustomOAuth2UserService
 import k.co.willynganga.codematatasessions.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationSuccessHandler
-import k.co.willynganga.codematatasessions.service.CustomOAuth2UserService
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -47,8 +47,8 @@ open class WebSecurityConfig constructor(
             .antMatchers("/oauth/**", "/oauth2/**").permitAll()
             .antMatchers("/",
                 "/api/v1/instructor/add",
-                "/api/v1/student/add"
-            ).permitAll()
+                "/api/v1/student/add")
+            .permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
@@ -62,6 +62,9 @@ open class WebSecurityConfig constructor(
                 .authorizationEndpoint()
                     .baseUri("/oauth2/authorize")
                     .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                    .and()
+                .redirectionEndpoint()
+                    .baseUri("/oauth2/callback/*")
                     .and()
                 .userInfoEndpoint()
                     .userService(customOAuth2UserService)

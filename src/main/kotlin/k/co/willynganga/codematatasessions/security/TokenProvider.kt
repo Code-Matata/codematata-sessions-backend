@@ -14,26 +14,26 @@ class TokenProvider constructor(@Autowired private val appProperties: AppPropert
     private val logger = LoggerFactory.getLogger(TokenProvider::class.java)
 
     fun createToken(authentication: Authentication): String {
-        val principal = authentication.principal as CustomOAuth2User
+        val principal = authentication.principal as UserPrincipal
 
         val now = Date()
         val expiryDate = Date(now.time + appProperties.getAuth().tokenExpirationMsec)
 
         return Jwts.builder()
-            .setSubject(principal.name)
+            .setSubject(principal.getId().toString())
             .setIssuedAt(Date())
             .setExpiration(expiryDate)
             .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().tokenSecret)
             .compact()
     }
 
-    fun getUserIdFromToken(token: String): String {
+    fun getUserIdFromToken(token: String): Long {
         val claims = Jwts.parser()
             .setSigningKey(appProperties.getAuth().tokenSecret)
             .parseClaimsJws(token)
             .body
 
-        return claims.subject.toString()
+        return claims.subject.toLong()
     }
 
     fun validateToken(token: String): Boolean {

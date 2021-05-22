@@ -23,5 +23,6 @@ class RestAuthenticationEntryPoint : AuthenticationEntryPoint {
             HttpServletResponse.SC_UNAUTHORIZED,
             exception?.localizedMessage
         )
+        throw RuntimeException(exception)
     }
 }
