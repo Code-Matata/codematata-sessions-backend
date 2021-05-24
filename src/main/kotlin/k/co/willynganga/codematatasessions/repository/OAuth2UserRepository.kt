@@ -9,5 +9,6 @@ interface OAuth2UserRepository : JpaRepository<OAuthUser, Long> {
 
     fun findByEmail(email: String): OAuthUser?
 
+    fun deleteByEmail(email: String): Long
 
 }
