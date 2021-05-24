@@ -1,24 +1,20 @@
 package k.co.willynganga.codematatasessions.model
 
-import k.co.willynganga.codematatasessions.other.ROLE
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
+import k.co.willynganga.codematatasessions.other.PROVIDER
+import javax.persistence.*
 
-@Entity(name = "oauth_users")
+@Entity
+@Table(name = "aouth_users")
 data class OAuthUser(
-    @Id
-    @Column(length = 30)
-    val sub: String,
     @Column(length = 100)
     val name: String,
-    @Column(length = 50)
-    val given_name: String,
-    @Column(length = 50)
-    val family_name: String,
-    val picture: String,
+    val imageUrl: String,
     @Column(length = 50)
     val email: String,
-    @Column(length = 10)
-    val role: ROLE
+    val emailVerified: Boolean = false,
+    val provider: PROVIDER,
+    val providerId: String,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 )
