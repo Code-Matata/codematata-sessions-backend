@@ -3,11 +3,9 @@ package k.co.willynganga.codematatasessions.model
 import k.co.willynganga.codematatasessions.other.PROVIDER
 import javax.persistence.*
 
-@Entity(name = "oauth_users")
+@Entity
+@Table(name = "aouth_users")
 data class OAuthUser(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
     @Column(length = 100)
     val name: String,
     val imageUrl: String,
@@ -15,6 +13,8 @@ data class OAuthUser(
     val email: String,
     val emailVerified: Boolean = false,
     val provider: PROVIDER,
-    val providerId: String
-
+    val providerId: String,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 )
