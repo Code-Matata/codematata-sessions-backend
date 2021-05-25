@@ -16,8 +16,8 @@ You need to have:
 ## OAuth2 Configuration
 You will need to create two OAuth Apps:
 
-  1. For Google 
-  2. For Github
+  1. For Google - You can learn how to do it here: https://support.google.com/googleapi/answer/6158849?hl=en
+  2. For Github - You can learn how to do it here: https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
  
 After that in a property file named (application-local.yml), you can add the Client ID and Client Secret as follows:
 
@@ -60,3 +60,14 @@ In Windows:
 ```bash
 ./gradlew.bat bootRun 
 ```
+## Dependencies
+1. Spring Boot Starter Web
+2. Spring Data Jpa
+3. GSon
+4. Jjwt
+5. PostgreSql Driver
+6. H2 Database for testing
+7. Spring Boot Starter Security
+8. Ninja Squad Spring Mockk
+9. Spring Boot Starter Security Test
+10. Mockito Kotlin
