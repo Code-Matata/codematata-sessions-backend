@@ -1,6 +1,7 @@
 package k.co.willynganga.codematatasessions.security
 
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -10,10 +11,12 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class TokenAuthenticationFilter(
-    private val tokenProvider: TokenProvider,
-    private val customUserDetailsService: CustomUserDetailsService
-) : OncePerRequestFilter() {
+class TokenAuthenticationFilter : OncePerRequestFilter() {
+
+    @Autowired
+    private lateinit var tokenProvider: TokenProvider
+    @Autowired
+    private lateinit var customUserDetailsService: CustomUserDetailsService
 
     private val logger = LoggerFactory.getLogger(TokenAuthenticationFilter::class.java)
 
