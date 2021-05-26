@@ -1,6 +1,7 @@
 package k.co.willynganga.codematatasessions.config
 
 import k.co.willynganga.codematatasessions.security.RestAuthenticationEntryPoint
+import k.co.willynganga.codematatasessions.security.TokenAuthenticationFilter
 import k.co.willynganga.codematatasessions.security.oauth2.CustomOAuth2UserService
 import k.co.willynganga.codematatasessions.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +34,11 @@ open class WebSecurityConfig constructor(
     @Bean
     open fun cookieAuthorizationRequestRepository(): HttpCookieOAuth2AuthorizationRequestRepository {
         return HttpCookieOAuth2AuthorizationRequestRepository()
+    }
+
+    @Bean
+    fun tokenAuthorizationFilter(): TokenAuthenticationFilter {
+     return TokenAuthenticationFilter()
     }
 
     override fun configure(http: HttpSecurity?) {
@@ -71,5 +78,7 @@ open class WebSecurityConfig constructor(
                     .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
+
+        http.addFilterBefore(tokenAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 }
