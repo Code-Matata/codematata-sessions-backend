@@ -3,15 +3,20 @@ package k.co.willynganga.codematatasessions.controller
 import k.co.willynganga.codematatasessions.model.OAuthUser
 import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.model.Response
+import k.co.willynganga.codematatasessions.service.ImageService
+import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/v1/")
 open class MainController(
     private val recordingService: RecordingService,
-    private val oAuthUserService: OAuthUserService
+    private val oAuthUserService: OAuthUserService,
+    private val imageService: ImageService,
+    private val imageUrlService: ImageUrlService
 ) {
 
     //Recording
@@ -21,8 +26,19 @@ open class MainController(
     }
 
     @PostMapping("/recording/add")
-    fun addRecording(@RequestBody recording: Recording): Response {
-        return recordingService.addRecording(recording)
+    fun addRecording(
+        @RequestParam file: MultipartFile,
+        @RequestParam title: String,
+        @RequestParam description: String,
+        @RequestParam videoUrl: String,
+        @RequestParam date: String,
+        @RequestParam instructor: String
+    ): Response {
+        val recording = Recording(title, description, videoUrl, date, instructor)
+        val response = recordingService.addRecording(recording)
+        val image = imageService.addImage(file)
+        imageUrlService.addUrl("http://localhost:8083/api/v1/images/${image?.id}", recording)
+        return response
     }
 
     @GetMapping("/recording/{id}")
@@ -46,8 +62,10 @@ open class MainController(
     }
 
     @GetMapping("/recording/by-title-and-date")
-    fun getRecordingByTitleAndString(@RequestParam("title") title: String,
-                                     @RequestParam("date") date: String): List<Recording> {
+    fun getRecordingByTitleAndString(
+        @RequestParam("title") title: String,
+        @RequestParam("date") date: String
+    ): List<Recording> {
         return recordingService.findRecordingByTitleAndDate(title, date)
     }
 
