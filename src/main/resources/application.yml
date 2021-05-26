@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    include: local
+    include: deploy
   jpa:
     hibernate:
       ddl-auto: update
