@@ -5,7 +5,9 @@ import k.co.willynganga.codematatasessions.repository.OAuth2UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.stereotype.Service
 
+@Service
 class CustomUserDetailsService(private var oAuth2UserRepository: OAuth2UserRepository): UserDetailsService {
 
     override fun loadUserByUsername(email: String?): UserDetails {
