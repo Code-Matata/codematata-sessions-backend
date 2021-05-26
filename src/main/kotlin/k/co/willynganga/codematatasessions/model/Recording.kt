@@ -8,9 +8,14 @@ data class Recording(
     val title: String,
     val description: String,
     val videoUrl: String,
-    val imageUrl: String,
     val date: String,
     val instructor: String,
+    @OneToOne(
+        mappedBy = "recording",
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL]
+    )
+    var imageUrl: ImageUrl? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0

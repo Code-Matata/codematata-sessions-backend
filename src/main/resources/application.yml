@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8080
 spring:
   profiles:
     include: local
@@ -11,7 +11,6 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-    show-sql: true
   datasource:
     url: "jdbc:postgresql://localhost:5432/codematata_sessions"
     username: willyngash
@@ -28,4 +27,5 @@ app:
     # redirectUri mentioned by the client in the /oauth2/authorize request.
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris:
-      - http://localhost:3000/oauth2/redirect
+      - http://localhost:3000/oauth2/student/redirect
+      - http://localhost:3000/oauth2/instructor/redirect
