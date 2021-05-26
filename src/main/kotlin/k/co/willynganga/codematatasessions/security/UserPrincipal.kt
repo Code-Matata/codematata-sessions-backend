@@ -17,7 +17,7 @@ class UserPrincipal(
     companion object {
 
         fun create(user: OAuthUser, attributes: MutableMap<String, Any>): UserPrincipal {
-            val userPrinciple = UserPrincipal.create(user)
+            val userPrinciple = create(user)
             userPrinciple.attributes = attributes
             return userPrinciple
         }
