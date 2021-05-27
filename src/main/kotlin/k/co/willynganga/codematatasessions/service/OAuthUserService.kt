@@ -16,6 +16,9 @@ class OAuthUserService constructor(@Autowired private val repository: OAuth2User
     //find by email
     fun findByEmail(email: String): OAuthUser? = repository.findByEmail(email)
 
+    //find by Id
+    fun findById(id: Long) = repository.findById(id)
+
     //add user
     fun addUser(oAuthUser: OAuthUser): Response {
         repository.saveAndFlush(oAuthUser)

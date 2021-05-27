@@ -3,6 +3,8 @@ package k.co.willynganga.codematatasessions.controller
 import k.co.willynganga.codematatasessions.model.OAuthUser
 import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.model.Response
+import k.co.willynganga.codematatasessions.security.CurrentUser
+import k.co.willynganga.codematatasessions.security.UserPrincipal
 import k.co.willynganga.codematatasessions.service.ImageService
 import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
@@ -73,4 +75,9 @@ open class MainController(
 
     @GetMapping("/oauth-user/all")
     fun getAllOAuthUsers(): List<OAuthUser> = oAuthUserService.findAllUsers()
+
+    @GetMapping("/oauth-user/me")
+    fun getCurrentUser(@CurrentUser userPrincipal: UserPrincipal): OAuthUser {
+        return oAuthUserService.findById(userPrincipal.getId()).orElse(null)
+    }
 }
