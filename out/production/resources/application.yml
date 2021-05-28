@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    include: deploy
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/codematata_sessions"
+    username: willyngash
+    password: admin254
+    platform: postgres
+
+app:
+  auth:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
