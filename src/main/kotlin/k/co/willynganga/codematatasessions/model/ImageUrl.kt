@@ -9,7 +9,7 @@ data class ImageUrl(
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "recording_id", nullable = false)
     @JsonBackReference
-    private val recording: Recording,
+    val recording: Recording,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long = 0

@@ -5,7 +5,7 @@ import javax.persistence.*
 @Entity
 data class Image(
     @Lob
-    private val image: ByteArray,
+    val image: ByteArray,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
