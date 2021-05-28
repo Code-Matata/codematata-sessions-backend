@@ -9,6 +9,7 @@ import k.co.willynganga.codematatasessions.service.ImageService
 import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
+import k.co.willynganga.codematatasessions.util.Utils.Companion.convertFileToBytes
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -39,7 +40,7 @@ open class MainController(
     ): Response {
         val recording = Recording(title, description, videoUrl, date, instructor)
         val response = recordingService.addRecording(recording)
-        val image = imageService.addImage(file)
+        val image = imageService.addImage(convertFileToBytes(file)!!)
         imageUrlService.addUrl("http://localhost:8083/api/v1/images/${image?.id}", recording)
         return response
     }
