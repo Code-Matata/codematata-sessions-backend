@@ -11,8 +11,8 @@ spring:
               - email
               - profile
           github:
-            clientId: process.env.GITHUB_CLIENT_ID
-            clientSecret: process.env.GITHUB_CLEINT_SECRET
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLEINT_SECRET}
             redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - user:email
