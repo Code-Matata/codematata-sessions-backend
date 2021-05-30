@@ -41,7 +41,7 @@ open class MainController(
         val recording = Recording(title, description, videoUrl, date, instructor)
         val response = recordingService.addRecording(recording)
         val image = imageService.addImage(convertFileToBytes(file)!!)
-        imageUrlService.addUrl("http://localhost:8083/api/v1/images/${image?.id}", recording)
+        imageUrlService.addUrl("https://code-matata.herokuapp.com/api/v1/images/${image?.id}", recording)
         return response
     }
 

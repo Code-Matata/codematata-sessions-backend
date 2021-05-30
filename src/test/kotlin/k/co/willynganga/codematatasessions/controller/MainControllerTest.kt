@@ -1,14 +1,15 @@
 package k.co.willynganga.codematatasessions.controller
 
-import com.google.gson.Gson
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import k.co.willynganga.codematatasessions.model.ImageUrl
-import k.co.willynganga.codematatasessions.model.Recording
-import k.co.willynganga.codematatasessions.model.Response
+import k.co.willynganga.codematatasessions.model.*
+import k.co.willynganga.codematatasessions.other.PROVIDER
+import k.co.willynganga.codematatasessions.security.TokenAuthenticationFilter
 import k.co.willynganga.codematatasessions.security.oauth2.CustomOAuth2UserService
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationFailureHandler
 import k.co.willynganga.codematatasessions.security.oauth2.OAuth2AuthenticationSuccessHandler
+import k.co.willynganga.codematatasessions.service.ImageService
+import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
 import k.co.willynganga.codematatasessions.util.STATUS
@@ -16,15 +17,26 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
 internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
+
+    @MockkBean
+    private lateinit var imageService: ImageService
+
+    @MockkBean
+    private lateinit var imageUrlService: ImageUrlService
+
+    @MockkBean
+    private lateinit var tokenAuthenticationFilter: TokenAuthenticationFilter
 
     @MockkBean
     private lateinit var customOAuth2UserService: CustomOAuth2UserService
@@ -71,34 +83,44 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `can add a recording`() {
         //given
+        val image = ClassPathResource("application-local-img.png")
+        val file = MockMultipartFile("file", image.inputStream)
         val recording = Recording(
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
             "06-05-2021",
-            "Jane Doe",
-            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1
+            "Jane Doe"
         )
-        val body = Gson().toJson(recording)
+
         //when
         every { recordingService.addRecording(recording) } returns Response(
             0,
             STATUS.SUCCESS,
             "Recording Successfully Saved!"
         )
-
+        every { imageService.addImage(image.inputStream.readAllBytes()) } returns Image(image.inputStream.readAllBytes())
+        every {
+            imageUrlService.addUrl(
+                "https://code-matata.herokuapp.com/api/v1/images/0",
+                recording
+            )
+        } returns Response(
+            0,
+            STATUS.SUCCESS,
+            "Url added successfully!"
+        )
         //then
         mockMvc.perform(
-            post("/api/v1/recording/add")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+            multipart("/api/v1/recording/add")
+                .file(file)
+                .param("title", recording.title)
+                .param("description", recording.description)
+                .param("videoUrl", recording.videoUrl)
+                .param("date", recording.date)
+                .param("instructor", recording.instructor)
         )
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.requestCode").value(0))
-            .andExpect(jsonPath("\$.message").value("Recording Successfully Saved!"))
     }
 
     @Test
@@ -240,5 +262,31 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].id").value(recording.id))
             .andExpect(jsonPath("\$.[0].title").value(recording.title))
+    }
+
+    @Test
+    fun `can get all OAuth2 users`() {
+        //given
+        val oAuthUser = OAuthUser(
+            "Jane Doe",
+            "https://localhost:8080/img/1",
+            "jane.doe@gmail.com",
+            true,
+            PROVIDER.GOOGLE,
+            "1234567890"
+        )
+
+        //when
+        every { oAuthUserService.findAllUsers() } returns listOf(oAuthUser)
+
+        //then
+        mockMvc.perform(
+            get("/api/v1/oauth-user/all")
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.[0].id").value(oAuthUser.id))
+            .andExpect(jsonPath("\$.[0].name").value(oAuthUser.name))
+            .andExpect(jsonPath("\$.[0].providerId").value(oAuthUser.providerId))
     }
 }
