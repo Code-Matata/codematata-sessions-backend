@@ -10,6 +10,9 @@ import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
 import k.co.willynganga.codematatasessions.util.Utils.Companion.convertFileToBytes
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -81,5 +84,15 @@ open class MainController(
     @GetMapping("/oauth-user/me")
     fun getCurrentUser(@CurrentUser userPrincipal: UserPrincipal): OAuthUser {
         return oAuthUserService.findById(userPrincipal.getId()).orElse(null)
+    }
+
+    //Image
+    @GetMapping(path = ["/images/{id}"], produces = [MediaType.IMAGE_JPEG_VALUE])
+    fun getImage(@PathVariable id: Long): ResponseEntity<ByteArray> {
+        val image = imageService.findImageById(id)
+        val imageBytes = image?.image
+        return if (imageBytes != null)
+            ResponseEntity(imageBytes, HttpStatus.OK)
+        else ResponseEntity(HttpStatus.NOT_FOUND)
     }
 }
