@@ -28,4 +28,4 @@ app:
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
-      - https://code-matata.herokuapp.com/oauth2/redirect
+      - https://codematata.netlify.app/oauth2/redirect
