@@ -14,6 +14,10 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 @ExtendWith(MockitoExtension::class)
 internal class RecordingServiceTest {
@@ -33,10 +37,13 @@ internal class RecordingServiceTest {
 
     @Test
     fun `can find all recordings`() {
+        //given
+        val page = PageRequest.of(0, 12)
+        whenever(recordingsRepository.findAll(page)).thenReturn(Page.empty())
         //when
-        underTest.findAllRecordings()
+        underTest.findAllRecordings(page)
         //then
-        verify(recordingsRepository).findAll()
+        verify(recordingsRepository).findAll(page)
     }
 
     @Test
@@ -71,12 +78,16 @@ internal class RecordingServiceTest {
     @Test
     fun `can find recording using instructor username`() {
         //given
+        val page = PageRequest.of(0, 12)
         val username = "test"
-        underTest.findRecordingByInstructorUsername(username)
-
+        whenever(recordingsRepository.findByInstructor(page, username)).thenReturn(Page.empty())
         //when
-        verify(recordingsRepository).findByInstructor(stringArgumentCaptor.capture())
-        val capturedUsername = stringArgumentCaptor.firstValue
+        underTest.findRecordingByInstructorUsername(page, username)
+
+        //then
+        val argumentCaptor = argumentCaptor<Pageable, String>()
+        verify(recordingsRepository).findByInstructor(argumentCaptor.first.capture(), argumentCaptor.second.capture())
+        val capturedUsername = argumentCaptor.second.firstValue
 
         assertEquals(capturedUsername, username)
     }
@@ -105,15 +116,15 @@ internal class RecordingServiceTest {
     fun `can find recordings by date`() {
         //given
         val date = "2021-05-15"
-
-        underTest.findRecordingByDate(date)
-
+        val page = PageRequest.of(0, 12)
+        whenever(recordingsRepository.findByDate(page, date)).thenReturn(Page.empty())
         //when
-        val argumentCaptor = argumentCaptor<String>()
-        verify(recordingsRepository).findByDate(argumentCaptor.capture())
+        underTest.findRecordingByDate(page, date)
 
         //then
-        val capturedDate = argumentCaptor.firstValue
+        val argumentCaptor = argumentCaptor<Pageable, String>()
+        verify(recordingsRepository).findByDate(argumentCaptor.first.capture(), argumentCaptor.second.capture())
+        val capturedDate = argumentCaptor.second.firstValue
         assertEquals(capturedDate, date)
     }
 
@@ -122,16 +133,17 @@ internal class RecordingServiceTest {
         //given
         val date = "2021-05-15"
         val title = "spring boot"
-
-        underTest.findRecordingByTitleAndDate(title, date)
+        val page = PageRequest.of(0, 12)
+        whenever(recordingsRepository.findByTitleAndDate(page, title, date)).thenReturn(Page.empty())
 
         //when
-        val argumentCaptor = argumentCaptor<String>()
-        verify(recordingsRepository).findByTitleAndDate(argumentCaptor.capture(), argumentCaptor.capture())
+        underTest.findRecordingByTitleAndDate(page, title, date)
+        val argumentCaptor = argumentCaptor<Pageable, String>()
+        verify(recordingsRepository).findByTitleAndDate(argumentCaptor.first.capture(), argumentCaptor.second.capture(), argumentCaptor.second.capture())
 
         //then
-        val capturedTitle = argumentCaptor.firstValue
-        val capturedDate = argumentCaptor.secondValue
+        val capturedTitle = argumentCaptor.second.firstValue
+        val capturedDate = argumentCaptor.second.secondValue
 
         assertEquals(capturedTitle, title)
         assertEquals(capturedDate, date)

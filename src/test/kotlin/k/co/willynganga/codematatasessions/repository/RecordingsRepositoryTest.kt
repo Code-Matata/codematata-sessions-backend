@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
 
 @DataJpaTest
 open class RecordingsRepositoryTest @Autowired constructor(
@@ -68,14 +69,15 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "06-05-2021",
             username
         )
+        val page = PageRequest.of(0, 12)
 
         //when
         underTest.saveAndFlush(recording)
 
         //then
-        val exists = underTest.findByInstructor(username)
+        val exists = underTest.findByInstructor(page ,username)
 
-        assertThat(exists).isNotNull
+        assertThat(exists.content).isNotNull
     }
 
     @Test
@@ -89,14 +91,14 @@ open class RecordingsRepositoryTest @Autowired constructor(
             date,
             "test"
         )
-
+        val page = PageRequest.of(0, 12)
         //when
         underTest.saveAndFlush(recording)
 
         //then
-        val exists = underTest.findByDate(date)
+        val exists = underTest.findByDate(page, date)
 
-        assertEquals(exists, listOf(recording))
+        assertEquals(exists.content, listOf(recording))
     }
 
     @Test
@@ -110,14 +112,14 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "2021-05-06",
             "test"
         )
-
+        val page = PageRequest.of(0, 12)
         //when
         underTest.saveAndFlush(recording)
 
         //then
-        val exists = underTest.findByDate(date)
+        val exists = underTest.findByDate(page, date)
 
-        assertThat(exists).isEmpty()
+        assertThat(exists.content).isEmpty()
     }
 
     @Test
@@ -132,14 +134,14 @@ open class RecordingsRepositoryTest @Autowired constructor(
             date,
             "test"
         )
-
+        val page = PageRequest.of(0, 12)
         //when
         underTest.saveAndFlush(recording)
 
         //then
-        val exists = underTest.findByTitleAndDate(title, date)
+        val exists = underTest.findByTitleAndDate(page, title, date)
 
-        assertEquals(exists, listOf(recording))
+        assertEquals(exists.content, listOf(recording))
     }
 
     @Test
@@ -154,13 +156,13 @@ open class RecordingsRepositoryTest @Autowired constructor(
             "06-05-2021",
             "test"
         )
-
+        val page = PageRequest.of(0, 12)
         //when
         underTest.saveAndFlush(recording)
 
         //then
-        val exists = underTest.findByTitleAndDate(title, date)
+        val exists = underTest.findByTitleAndDate(page, title, date)
 
-        assertThat(exists).isEmpty()
+        assertThat(exists.content).isEmpty()
     }
 }

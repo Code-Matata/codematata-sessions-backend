@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.core.io.ClassPathResource
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
@@ -57,6 +58,7 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `can get all recordings`() {
         //given
+        val page = PageRequest.of(0, 12)
         val recording = Recording(
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
@@ -68,7 +70,11 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         )
 
         //when
-        every { recordingService.findAllRecordings() } returns listOf(recording)
+        every { recordingService.findAllRecordings(page) } returns RecordingsResponse(
+            1,
+            0,
+            listOf(recording)
+        )
 
         //then
         mockMvc.perform(
@@ -76,8 +82,8 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].id").value(recording.id))
-            .andExpect(jsonPath("\$.[0].title").value(recording.title))
+            .andExpect(jsonPath("\$.recordings.[0].id").value(recording.id))
+            .andExpect(jsonPath("\$.recordings.[0].title").value(recording.title))
     }
 
     @Test
@@ -191,9 +197,13 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
             1,
         )
-
+        val page = PageRequest.of(0, 12)
         //when
-        every { recordingService.findRecordingByInstructorUsername(username) } returns listOf(recording)
+        every { recordingService.findRecordingByInstructorUsername(page, username) } returns RecordingsResponse(
+            1,
+            0,
+            listOf(recording)
+        )
 
         //then
         mockMvc.perform(
@@ -202,8 +212,8 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].id").value(recording.id))
-            .andExpect(jsonPath("\$.[0].title").value(recording.title))
+            .andExpect(jsonPath("\$.recordings.[0].id").value(recording.id))
+            .andExpect(jsonPath("\$.recordings.[0].title").value(recording.title))
     }
 
     @Test
@@ -219,9 +229,14 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
             1,
         )
-
+        val page = PageRequest.of(0, 12)
         //when
-        every { recordingService.findRecordingByDate(date) } returns listOf(recording)
+        every { recordingService.findRecordingByDate(page ,date) } returns RecordingsResponse(
+            1,
+            0,
+            listOf(recording)
+        )
+
 
         //then
         mockMvc.perform(
@@ -230,8 +245,8 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].id").value(recording.id))
-            .andExpect(jsonPath("\$.[0].title").value(recording.title))
+            .andExpect(jsonPath("\$.recordings.[0].id").value(recording.id))
+            .andExpect(jsonPath("\$.recordings.[0].title").value(recording.title))
     }
 
     @Test
@@ -248,9 +263,15 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
             1
         )
+        val page = PageRequest.of(0, 12)
 
         //when
-        every { recordingService.findRecordingByTitleAndDate(title, date) } returns listOf(recording)
+        every { recordingService.findRecordingByTitleAndDate(page, title, date) } returns RecordingsResponse(
+            1,
+            0,
+            listOf(recording)
+        )
+
 
         //then
         mockMvc.perform(
@@ -260,8 +281,8 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].id").value(recording.id))
-            .andExpect(jsonPath("\$.[0].title").value(recording.title))
+            .andExpect(jsonPath("\$.recordings.[0].id").value(recording.id))
+            .andExpect(jsonPath("\$.recordings.[0].title").value(recording.title))
     }
 
     @Test
