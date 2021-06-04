@@ -2,6 +2,7 @@ package k.co.willynganga.codematatasessions.controller
 
 import k.co.willynganga.codematatasessions.model.OAuthUser
 import k.co.willynganga.codematatasessions.model.Recording
+import k.co.willynganga.codematatasessions.model.RecordingsResponse
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.security.CurrentUser
 import k.co.willynganga.codematatasessions.security.UserPrincipal
@@ -10,6 +11,8 @@ import k.co.willynganga.codematatasessions.service.ImageUrlService
 import k.co.willynganga.codematatasessions.service.OAuthUserService
 import k.co.willynganga.codematatasessions.service.RecordingService
 import k.co.willynganga.codematatasessions.util.Utils.Companion.convertFileToBytes
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -28,8 +31,8 @@ open class MainController(
 
     //Recording
     @GetMapping("/recording/all")
-    fun getAllRecordings(): List<Recording> {
-        return recordingService.findAllRecordings()
+    fun getAllRecordings(@PageableDefault(value = 12, page = 0) pageable: Pageable): RecordingsResponse {
+        return recordingService.findAllRecordings(pageable)
     }
 
     @PostMapping("/recording/add")
@@ -59,21 +62,28 @@ open class MainController(
     }
 
     @GetMapping("/recording/by-instructor")
-    fun getRecordingByInstructorUsername(@RequestParam username: String): List<Recording> {
-        return recordingService.findRecordingByInstructorUsername(username)
+    fun getRecordingByInstructorUsername(
+        @PageableDefault(value = 12, page = 0) pageable: Pageable,
+        @RequestParam username: String
+    ): RecordingsResponse {
+        return recordingService.findRecordingByInstructorUsername(pageable, username)
     }
 
     @GetMapping("/recording/by-date")
-    fun getRecordingByDate(@RequestParam("date") date: String): List<Recording> {
-        return recordingService.findRecordingByDate(date)
+    fun getRecordingByDate(
+        @PageableDefault(value = 12, page = 0) pageable: Pageable,
+        @RequestParam("date") date: String
+    ): RecordingsResponse {
+        return recordingService.findRecordingByDate(pageable, date)
     }
 
     @GetMapping("/recording/by-title-and-date")
     fun getRecordingByTitleAndString(
+        @PageableDefault(value = 12, page = 0) pageable: Pageable,
         @RequestParam("title") title: String,
         @RequestParam("date") date: String
-    ): List<Recording> {
-        return recordingService.findRecordingByTitleAndDate(title, date)
+    ): RecordingsResponse {
+        return recordingService.findRecordingByTitleAndDate(pageable, title, date)
     }
 
     //OAuthUser

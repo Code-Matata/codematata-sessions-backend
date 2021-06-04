@@ -1,9 +1,11 @@
 package k.co.willynganga.codematatasessions.service
 
 import k.co.willynganga.codematatasessions.model.Recording
+import k.co.willynganga.codematatasessions.model.RecordingsResponse
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.repository.RecordingsRepository
 import k.co.willynganga.codematatasessions.util.STATUS
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,8 +13,13 @@ open class RecordingService(
     private val repository: RecordingsRepository
 ) {
 
-    fun findAllRecordings(): List<Recording> {
-        return repository.findAll();
+    fun findAllRecordings(pageable: Pageable): RecordingsResponse {
+        val page = repository.findAll(pageable)
+        return RecordingsResponse(
+            page.totalPages,
+            page.number,
+            page.content
+        )
     }
 
     fun addRecording(recording: Recording): Response {
@@ -29,15 +36,30 @@ open class RecordingService(
         return repository.findByTitle(title)
     }
 
-    fun findRecordingByInstructorUsername(username: String): List<Recording> {
-        return repository.findByInstructor(username)
+    fun findRecordingByInstructorUsername(pageable: Pageable, username: String): RecordingsResponse {
+        val page = repository.findByInstructor(pageable, username)
+        return RecordingsResponse(
+            page.totalPages,
+            page.number,
+            page.content
+        )
     }
 
-    fun findRecordingByDate(date: String): List<Recording> {
-        return repository.findByDate(date)
+    fun findRecordingByDate(pageable: Pageable, date: String): RecordingsResponse {
+        val page = repository.findByDate(pageable, date)
+        return RecordingsResponse(
+            page.totalPages,
+            page.number,
+            page.content
+        )
     }
 
-    fun findRecordingByTitleAndDate(title: String, date: String): List<Recording> {
-        return repository.findByTitleAndDate(title, date)
+    fun findRecordingByTitleAndDate(pageable: Pageable, title: String, date: String): RecordingsResponse {
+        val page = repository.findByTitleAndDate(pageable, title, date)
+        return RecordingsResponse(
+            page.totalPages,
+            page.number,
+            page.content
+        )
     }
 }
