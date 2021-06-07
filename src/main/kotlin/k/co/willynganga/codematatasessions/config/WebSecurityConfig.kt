@@ -56,7 +56,7 @@ open class WebSecurityConfig constructor(
                 "/",
                 "/api/v1/instructor/add",
                 "/api/v1/student/add",
-                "api/v1/images/*"
+                "/api/v1/images/*"
             )
             .permitAll()
             .anyRequest().authenticated()
