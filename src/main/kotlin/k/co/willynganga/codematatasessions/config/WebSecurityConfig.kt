@@ -38,46 +38,49 @@ open class WebSecurityConfig constructor(
 
     @Bean
     fun tokenAuthorizationFilter(): TokenAuthenticationFilter {
-     return TokenAuthenticationFilter()
+        return TokenAuthenticationFilter()
     }
 
     override fun configure(http: HttpSecurity?) {
         http!!
             .cors()
-                .and()
+            .and()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .csrf()
-                .disable()
+            .disable()
             .authorizeRequests()
             .antMatchers("/oauth/**", "/oauth2/**").permitAll()
-            .antMatchers("/",
+            .antMatchers(
+                "/",
                 "/api/v1/instructor/add",
-                "/api/v1/student/add")
+                "/api/v1/student/add",
+                "api/v1/images/*"
+            )
             .permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
-                .disable()
+            .disable()
             .httpBasic()
-                .disable()
+            .disable()
             .exceptionHandling()
-                .authenticationEntryPoint(RestAuthenticationEntryPoint())
-                .and()
+            .authenticationEntryPoint(RestAuthenticationEntryPoint())
+            .and()
             .oauth2Login()
-                .authorizationEndpoint()
-                    .baseUri("/oauth2/authorize")
-                    .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                    .and()
-                .redirectionEndpoint()
-                    .baseUri("/oauth2/callback/*")
-                    .and()
-                .userInfoEndpoint()
-                    .userService(customOAuth2UserService)
-                    .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler)
+            .authorizationEndpoint()
+            .baseUri("/oauth2/authorize")
+            .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+            .and()
+            .redirectionEndpoint()
+            .baseUri("/oauth2/callback/*")
+            .and()
+            .userInfoEndpoint()
+            .userService(customOAuth2UserService)
+            .and()
+            .successHandler(oAuth2AuthenticationSuccessHandler)
+            .failureHandler(oAuth2AuthenticationFailureHandler)
 
         http.addFilterBefore(tokenAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
