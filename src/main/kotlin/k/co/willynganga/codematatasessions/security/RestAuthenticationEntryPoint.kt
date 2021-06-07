@@ -18,7 +18,6 @@ class RestAuthenticationEntryPoint : AuthenticationEntryPoint {
         response: HttpServletResponse?,
         exception: AuthenticationException?
     ) {
-        logger.error("Responding with unauthorized error.  Message - ${exception?.localizedMessage}")
         response?.sendError(
             HttpServletResponse.SC_UNAUTHORIZED,
             exception?.localizedMessage
