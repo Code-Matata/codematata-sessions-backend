@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import java.time.LocalDateTime
 import java.util.*
@@ -32,11 +33,17 @@ internal class EventServiceTest {
     fun getAllEvents() {
         //given
         val pageable = PageRequest.of(0, 12)
+
         //when
+        whenever(eventsRepository.findAll(pageable)).thenReturn(Page.empty())
         underTest.getAllEvents(pageable)
 
         //then
-        verify(eventsRepository).findAll()
+        val argumentCaptor = argumentCaptor<PageRequest>()
+        verify(eventsRepository).findAll(argumentCaptor.capture())
+        val capturedPageRequest = argumentCaptor.firstValue
+
+        assertEquals(capturedPageRequest, pageable)
     }
 
     @Test
