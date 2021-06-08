@@ -106,7 +106,7 @@ class MainController(
 
     //Event
     @GetMapping("/event/all")
-    fun getAllEvents(): List<Event> = eventService.getAllEvents()
+    fun getAllEvents(@PageableDefault(value = 12, page = 0) pageable: Pageable): EventsResponse = eventService.getAllEvents(pageable)
 
     @PostMapping("/event/add")
     fun saveNewEvent(
