@@ -17,14 +17,4 @@ class EventImageUrlService(
         return Response(0, STATUS.SUCCESS, "Url added successfully!")
     }
 
-    fun getUrl(id: Long): String {
-        val existingUrl = eventImageUrlRepository.findById(id)
-        return existingUrl.map { it.url }.orElse(null)
-    }
-
-    fun deleteUrl(id: Long): Response {
-        eventImageUrlRepository.deleteById(id)
-        return Response(0, STATUS.SUCCESS, "Deleted the image url!")
-    }
-
 }
