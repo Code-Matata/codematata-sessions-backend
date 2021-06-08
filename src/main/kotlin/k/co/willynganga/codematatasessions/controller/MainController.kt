@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/")
-open class MainController(
+class MainController(
     private val recordingService: RecordingService,
     private val oAuthUserService: OAuthUserService,
     private val imageService: ImageService,
