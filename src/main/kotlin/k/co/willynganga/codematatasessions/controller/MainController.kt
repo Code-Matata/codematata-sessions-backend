@@ -1,15 +1,10 @@
 package k.co.willynganga.codematatasessions.controller
 
-import k.co.willynganga.codematatasessions.model.OAuthUser
-import k.co.willynganga.codematatasessions.model.Recording
-import k.co.willynganga.codematatasessions.model.RecordingsResponse
-import k.co.willynganga.codematatasessions.model.Response
+import k.co.willynganga.codematatasessions.model.*
+import k.co.willynganga.codematatasessions.other.Constants.Companion.IMAGE_BASE_URL
 import k.co.willynganga.codematatasessions.security.CurrentUser
 import k.co.willynganga.codematatasessions.security.UserPrincipal
-import k.co.willynganga.codematatasessions.service.ImageService
-import k.co.willynganga.codematatasessions.service.ImageUrlService
-import k.co.willynganga.codematatasessions.service.OAuthUserService
-import k.co.willynganga.codematatasessions.service.RecordingService
+import k.co.willynganga.codematatasessions.service.*
 import k.co.willynganga.codematatasessions.util.Utils.Companion.convertFileToBytes
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -18,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDateTime
 
 @CrossOrigin
 @RestController
@@ -26,7 +22,9 @@ open class MainController(
     private val recordingService: RecordingService,
     private val oAuthUserService: OAuthUserService,
     private val imageService: ImageService,
-    private val imageUrlService: ImageUrlService
+    private val imageUrlService: ImageUrlService,
+    private val eventService: EventService,
+    private val eventImageUrlService: EventImageUrlService
 ) {
 
     //Recording
@@ -47,7 +45,7 @@ open class MainController(
         val recording = Recording(title, description, videoUrl, date, instructor)
         val response = recordingService.addRecording(recording)
         val image = imageService.addImage(convertFileToBytes(file)!!)
-        imageUrlService.addUrl("https://code-matata.herokuapp.com/api/v1/images/${image?.id}", recording)
+        imageUrlService.addUrl(IMAGE_BASE_URL + image?.id, recording)
         return response
     }
 
@@ -105,4 +103,39 @@ open class MainController(
             ResponseEntity(imageBytes, HttpStatus.OK)
         else ResponseEntity(HttpStatus.NOT_FOUND)
     }
+
+    //Event
+    @GetMapping("/event/all")
+    fun getAllEvents(): List<Event> = eventService.getAllEvents()
+
+    @PostMapping("/event/add")
+    fun saveNewEvent(
+        @RequestParam file: MultipartFile,
+        @RequestParam title: String,
+        @RequestParam description: String,
+        @RequestParam startTime: String,
+        @RequestParam endTime: String,
+        @RequestParam meetUrl: String,
+        @RequestParam prerequisites: String
+    ): Response {
+        val event = Event(
+            title,
+            description,
+            LocalDateTime.parse(startTime),
+            LocalDateTime.parse(endTime),
+            meetUrl,
+            prerequisites
+        )
+        val response = eventService.saveEvent(event)
+        val image = imageService.addImage(convertFileToBytes(file)!!)
+        eventImageUrlService.addUrl(IMAGE_BASE_URL + image?.id, event)
+        return response
+    }
+
+    @GetMapping("/event/{id}")
+    fun getEventById(@PathVariable id: Long): Event? = eventService.getEvent(id)
+
+    @DeleteMapping("/event/delete/{id}")
+    fun deleteEventById(@PathVariable id: Long): Response = eventService.deleteEvent(id)
+
 }
