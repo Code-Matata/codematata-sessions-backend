@@ -114,7 +114,7 @@ internal class EventServiceTest {
 
         //when
         whenever(eventsRepository.findById(id)).thenReturn(Optional.of(event))
-        whenever(imageService.deleteImage(id)).thenReturn(1)
+        whenever(imageService.deleteImage(id)).thenReturn(0)
         underTest.deleteEvent(id)
 
         //then
