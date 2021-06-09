@@ -84,6 +84,9 @@ class MainController(
         return recordingService.findRecordingByTitleAndDate(pageable, title, date)
     }
 
+    @DeleteMapping("/recording/delete/{id}")
+    fun deleteRecordingWithId(@PathVariable id: Long): Response = recordingService.deleteRecordingById(id)
+
     //OAuthUser
 
     @GetMapping("/oauth-user/all")
