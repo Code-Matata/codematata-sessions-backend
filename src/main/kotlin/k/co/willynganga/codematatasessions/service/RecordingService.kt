@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service
 
 @Service
 open class RecordingService(
-    private val repository: RecordingsRepository
+    private val repository: RecordingsRepository,
+    private val imageService: ImageService
 ) {
 
     fun findAllRecordings(pageable: Pageable): RecordingsResponse {
@@ -61,5 +62,16 @@ open class RecordingService(
             page.number,
             page.content
         )
+    }
+
+    fun deleteRecordingById(id: Long): Response {
+        val recording = repository.findById(id)
+        recording.ifPresent {
+            imageService.deleteImage(it.imageUrl?.url?.takeLast(1)?.toLong()!!)
+            repository.delete(it)
+        }
+        return if (recording.isPresent)
+            Response(0, STATUS.SUCCESS, "Recording deleted successfully!")
+        else Response(1, STATUS.FAIL, "There is no event with id of $id!")
     }
 }
