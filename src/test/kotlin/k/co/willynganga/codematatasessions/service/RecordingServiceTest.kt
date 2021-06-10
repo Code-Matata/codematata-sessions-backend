@@ -2,6 +2,7 @@ package k.co.willynganga.codematatasessions.service
 
 import io.github.wickie73.mockito4kotlin.annotation.KCaptor
 import io.github.wickie73.mockito4kotlin.annotation.KMockitoAnnotations
+import k.co.willynganga.codematatasessions.model.ImageUrl
 import k.co.willynganga.codematatasessions.model.Recording
 import k.co.willynganga.codematatasessions.repository.RecordingsRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -18,6 +19,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class RecordingServiceTest {
@@ -27,12 +29,14 @@ internal class RecordingServiceTest {
 
     @Mock
     private lateinit var recordingsRepository: RecordingsRepository
+    @Mock
+    private lateinit var imageService: ImageService
     private lateinit var underTest: RecordingService
 
     @BeforeEach
     internal fun setUp() {
         KMockitoAnnotations.openMocks(this)
-        underTest = RecordingService(recordingsRepository)
+        underTest = RecordingService(recordingsRepository, imageService)
     }
 
     @Test
@@ -147,5 +151,31 @@ internal class RecordingServiceTest {
 
         assertEquals(capturedTitle, title)
         assertEquals(capturedDate, date)
+    }
+
+    @Test
+    fun `can delete recording with id`() {
+        //given
+        val id: Long = 1
+        val recording = Recording(
+            "Spring Boot",
+            "An introduction to spring boot and Kotlin",
+            "https://www.youtube.com/embed/Geq60OVyBPg",
+            "06-05-2021",
+            "test",
+            ImageUrl("http://localhost:8080/api/v1/images/1")
+        )
+
+        //when
+        whenever(recordingsRepository.findById(id)).thenReturn(Optional.of(recording))
+        whenever(imageService.deleteImage(id)).thenReturn(0)
+        underTest.deleteRecordingById(id)
+
+        //then
+        val argumentCaptor = argumentCaptor<Recording>()
+        verify(recordingsRepository).delete(argumentCaptor.capture())
+        val capturedRecording = argumentCaptor.firstValue
+
+        assertEquals(capturedRecording, recording)
     }
 }
