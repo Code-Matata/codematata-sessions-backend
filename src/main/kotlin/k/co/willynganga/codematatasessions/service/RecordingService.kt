@@ -37,15 +37,6 @@ open class RecordingService(
         return repository.findByTitle(title)
     }
 
-    fun findRecordingByInstructorUsername(pageable: Pageable, username: String): RecordingsResponse {
-        val page = repository.findByInstructor(pageable, username)
-        return RecordingsResponse(
-            page.totalPages,
-            page.number,
-            page.content
-        )
-    }
-
     fun findRecordingByDate(pageable: Pageable, date: String): RecordingsResponse {
         val page = repository.findByDate(pageable, date)
         return RecordingsResponse(
