@@ -33,8 +33,8 @@ internal class ImageUrlServiceTest {
             "Spring Boot 101",
             "This is an introductory course on Spring Boot framework.",
             "https://youtube.com",
+            "github.com/janedoe/spring-boot.git",
             "2021-05-27",
-            "Willy Nganga"
         )
         val url = "http://codematata/api/v1/image/1"
         //when
@@ -56,8 +56,8 @@ internal class ImageUrlServiceTest {
             "Spring Boot 101",
             "This is an introductory course on Spring Boot framework.",
             "https://youtube.com",
+            "github.com/janedoe/spring-boot.git",
             "2021-05-27",
-            "Willy Nganga"
         )
         val url = "http://codematata/api/v1/image/1"
         val id: Long = 0
