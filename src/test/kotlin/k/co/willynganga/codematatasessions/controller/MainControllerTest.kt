@@ -59,6 +59,9 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     @MockkBean
     private lateinit var eventImageUrlService: EventImageUrlService
 
+    @MockkBean
+    private lateinit var instructorService: InstructorService
+
 
     @Test
     fun `can get all recordings`() {
@@ -68,10 +71,9 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "Jane Doe",
-            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1,
+            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", ""))
         )
 
         //when
@@ -94,17 +96,31 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `can add a recording`() {
         //given
+        val instructorUsername = "jane-doe"
         val image = ClassPathResource("application-local-img.png")
         val file = MockMultipartFile("file", image.inputStream)
+        val instructor = Instructor(
+            instructorUsername,
+            "Jane Doe",
+            "janedo@test.com",
+            "A software engineer at Google!",
+            "github.com/jane-doe",
+            "@janedoe99",
+            "janedoe99",
+            "+1 999 231 232"
+        )
         val recording = Recording(
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "Jane Doe"
+            instructor = instructor
         )
 
+
         //when
+        every { instructorService.findByUsername(instructorUsername) } returns instructor
         every { recordingService.addRecording(recording) } returns Response(
             0,
             STATUS.SUCCESS,
@@ -129,7 +145,8 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
                 .param("description", recording.description)
                 .param("videoUrl", recording.videoUrl)
                 .param("date", recording.date)
-                .param("instructor", recording.instructor)
+                .param("instructorUsername", recording.instructor?.username)
+                .param("git", recording.git)
         )
             .andExpect(status().isOk)
     }
@@ -142,10 +159,9 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "Jane Doe",
-            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            id
+            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", ""))
         )
 
         //when
@@ -169,10 +185,9 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "Jane Doe",
-            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1,
+            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", ""))
         )
 
         //when
@@ -190,38 +205,6 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `can get recordings by instructor username`() {
-        //given
-        val username = "Jane Doe"
-        val recording = Recording(
-            "Spring Boot",
-            "An introduction to spring boot and Kotlin",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
-            "06-05-2021",
-            username,
-            ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1,
-        )
-        val page = PageRequest.of(0, 12)
-        //when
-        every { recordingService.findRecordingByInstructorUsername(page, username) } returns RecordingsResponse(
-            1,
-            0,
-            listOf(recording)
-        )
-
-        //then
-        mockMvc.perform(
-            get("/api/v1/recording/by-instructor")
-                .param("username", username)
-        )
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.recordings.[0].id").value(recording.id))
-            .andExpect(jsonPath("\$.recordings.[0].title").value(recording.title))
-    }
-
-    @Test
     fun `can get recording by date`() {
         //given
         val date = "06-05-2021"
@@ -229,14 +212,13 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             date,
-            "test",
             ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1,
         )
         val page = PageRequest.of(0, 12)
         //when
-        every { recordingService.findRecordingByDate(page ,date) } returns RecordingsResponse(
+        every { recordingService.findRecordingByDate(page, date) } returns RecordingsResponse(
             1,
             0,
             listOf(recording)
@@ -263,10 +245,9 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
             title,
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             date,
-            "test",
             ImageUrl("http://localhost/api/v1/images/1", Recording("", "", "", "", "")),
-            1
         )
         val page = PageRequest.of(0, 12)
 
@@ -381,21 +362,40 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `can save a new event`() {
         //given
+        val instructorUsername = "jane-doe"
         val image = ClassPathResource("application-local-img.png")
         val file = MockMultipartFile("file", image.inputStream)
+        val instructor = Instructor(
+            instructorUsername,
+            "Jane Doe",
+            "janedo@test.com",
+            "A software engineer at Google!",
+            "github.com/jane-doe",
+            "@janedoe99",
+            "janedoe99",
+            "+1 999 231 232"
+        )
         val event = Event(
             "PostgreSQL 101",
             "An intro to PostgreSQL as a relational DB.",
             LocalDateTime.parse("2021-06-08T10:15:30"),
             LocalDateTime.parse("2021-06-08T11:15:30"),
             "meet.google.com/kdj-jkxm-ntx",
-            "Windows, Mac, or Linux OS."
+            "Windows, Mac, or Linux OS.",
+            instructor = instructor
         )
 
+
         //when
+        every { instructorService.findByUsername(instructorUsername) } returns instructor
         every { eventService.saveEvent(event) } returns Response(0, STATUS.SUCCESS, "Event added successfully!")
         every { imageService.addImage(convertFileToBytes(file)!!) } returns Image(convertFileToBytes(file)!!)
-        every { eventImageUrlService.addUrl(IMAGE_BASE_URL + "0", event) } returns Response(0, STATUS.SUCCESS, "Url added successfully!")
+        every { eventImageUrlService.addUrl(IMAGE_BASE_URL + "0", event) } returns Response(
+            0,
+            STATUS.SUCCESS,
+            "Url added successfully!"
+        )
+
 
         //then
         mockMvc.perform(
@@ -407,6 +407,7 @@ internal class MainControllerTest(@Autowired val mockMvc: MockMvc) {
                 .param("endTime", "2021-06-08T11:15:30")
                 .param("meetUrl", event.meetUrl)
                 .param("prerequisites", event.prerequisites)
+                .param("username", instructorUsername)
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
