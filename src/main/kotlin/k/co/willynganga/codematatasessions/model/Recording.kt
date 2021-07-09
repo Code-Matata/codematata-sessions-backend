@@ -1,5 +1,6 @@
 package k.co.willynganga.codematatasessions.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import javax.persistence.*
 
 @Entity
@@ -8,15 +9,19 @@ data class Recording(
     val title: String,
     val description: String,
     val videoUrl: String,
+    val git: String,
     val date: String,
-    val instructor: String,
     @OneToOne(
         mappedBy = "recording",
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL]
     )
     var imageUrl: ImageUrl? = null,
+    @JsonIgnoreProperties("recordings")
+    @ManyToOne
+    @JoinColumn(name = "instructor_id", nullable = false)
+    var instructor: Instructor? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
+    val id: Long = 0
 )
