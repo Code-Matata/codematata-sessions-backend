@@ -9,8 +9,6 @@ interface RecordingsRepository : JpaRepository<Recording, Long> {
 
     fun findByTitle(title: String): Recording?
 
-    fun findByInstructor(pageable: Pageable, username: String): Page<Recording>
-
     fun findByDate(pageable: Pageable, date: String): Page<Recording>
 
     fun findByTitleAndDate(pageable: Pageable, title: String, date: String): Page<Recording>
