@@ -17,6 +17,9 @@ data class Event(
         cascade = [CascadeType.ALL]
     )
     var imageUrl: EventImageUrl? = null,
+    @ManyToOne
+    @JoinColumn(name = "instructor_id", nullable = false)
+    var instructor: Instructor? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
