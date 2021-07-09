@@ -80,31 +80,14 @@ internal class RecordingServiceTest {
     }
 
     @Test
-    fun `can find recording using instructor username`() {
-        //given
-        val page = PageRequest.of(0, 12)
-        val username = "test"
-        whenever(recordingsRepository.findByInstructor(page, username)).thenReturn(Page.empty())
-        //when
-        underTest.findRecordingByInstructorUsername(page, username)
-
-        //then
-        val argumentCaptor = argumentCaptor<Pageable, String>()
-        verify(recordingsRepository).findByInstructor(argumentCaptor.first.capture(), argumentCaptor.second.capture())
-        val capturedUsername = argumentCaptor.second.firstValue
-
-        assertEquals(capturedUsername, username)
-    }
-
-    @Test
     fun `can add recording`() {
         //given
         val recording = Recording(
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Geq60OVyBPg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "test",
             )
         underTest.addRecording(recording)
 
@@ -161,8 +144,8 @@ internal class RecordingServiceTest {
             "Spring Boot",
             "An introduction to spring boot and Kotlin",
             "https://www.youtube.com/embed/Geq60OVyBPg",
+            "github.com/janedoe/spring-boot.git",
             "06-05-2021",
-            "test",
             ImageUrl("http://localhost:8080/api/v1/images/1")
         )
 
