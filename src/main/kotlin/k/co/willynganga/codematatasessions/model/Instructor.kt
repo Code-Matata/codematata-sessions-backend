@@ -29,5 +29,5 @@ data class Instructor(
     val events: List<Event> = emptyList(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long = 0
+    val id: Long = 0
 )
