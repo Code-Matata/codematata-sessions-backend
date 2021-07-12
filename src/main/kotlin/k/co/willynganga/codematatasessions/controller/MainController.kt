@@ -160,6 +160,18 @@ class MainController(
         return instructorService.addInstructor(instructor)
     }
 
+    @PutMapping("/instructor/update")
+    fun updateInstructor(
+        @RequestBody instructor: Instructor
+    ): Response {
+        return  instructorService.updateInstructor(instructor)
+    }
+
+    @GetMapping("/instructor/{username}")
+    fun findInstructorByUsername(@PathVariable("username") username: String): Instructor? {
+        return instructorService.findByUsername(username)
+    }
+
     @DeleteMapping("/instructor/delete")
     fun deleteInstructor(@RequestParam username: String): Response {
         return instructorService.deleteInstructor(username)
