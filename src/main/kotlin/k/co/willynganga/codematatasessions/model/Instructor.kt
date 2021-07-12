@@ -10,11 +10,11 @@ data class Instructor(
     val name: String,
     @Column(unique = true)
     val email: String,
-    val bioInfo: String,
-    val github: String,
-    val twitter: String,
-    val instagram: String,
-    val phone: String,
+    val bioInfo: String = "",
+    val github: String = "",
+    val twitter: String = "",
+    val instagram: String = "",
+    val phone: String = "",
     @OneToMany(
         mappedBy = "instructor",
         cascade = [CascadeType.ALL],
