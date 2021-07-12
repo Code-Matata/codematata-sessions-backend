@@ -29,6 +29,16 @@ class InstructorService(private val repository: InstructorRepository) {
         return Response(0, STATUS.SUCCESS, "Instructor saved successfully!")
     }
 
+    fun updateInstructor(instructor: Instructor): Response {
+        val existingInstructor = repository.findById(instructor.id)
+        return if (existingInstructor.isPresent) {
+            repository.save(instructor)
+            Response(0, STATUS.SUCCESS, "Instructor saved successfully!")
+        } else {
+            Response(1, STATUS.FAIL, "Instructor could not be found!")
+        }
+    }
+
     fun deleteInstructor(username: String): Response {
         val instructor = repository.findByUsername(username)
         instructor?.let {
