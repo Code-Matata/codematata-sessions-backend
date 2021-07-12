@@ -155,16 +155,8 @@ class MainController(
 
     @PostMapping("/instructor/add")
     fun addNewInstructor(
-        @RequestParam username: String,
-        @RequestParam name: String,
-        @RequestParam email: String,
-        @RequestParam phone: String,
-        @RequestParam github: String?,
-        @RequestParam twitter: String?,
-        @RequestParam instagram: String?,
-        @RequestParam bioInfo: String,
+        @RequestBody instructor: Instructor
     ): Response {
-        val instructor = Instructor(username, email, name, bioInfo, github!!, twitter!!, instagram!!, phone)
         return instructorService.addInstructor(instructor)
     }
 
