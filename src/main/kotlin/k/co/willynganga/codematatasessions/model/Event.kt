@@ -4,23 +4,23 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity(name = "session_event")
-data class Event(
-    val title: String,
-    val description: String,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime,
-    val meetUrl: String,
-    val prerequisites: String,
+open class Event(
+    open val title: String,
+    open val description: String,
+    open val startTime: LocalDateTime,
+    open val endTime: LocalDateTime,
+    open val meetUrl: String,
+    open val prerequisites: String,
     @OneToOne(
         mappedBy = "event",
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL]
     )
-    var imageUrl: EventImageUrl? = null,
+    open var imageUrl: EventImageUrl? = null,
     @ManyToOne
     @JoinColumn(name = "instructor_id", nullable = false)
-    var instructor: Instructor? = null,
+    open var instructor: Instructor? = null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0
+    open val id: Long = 0
 )
