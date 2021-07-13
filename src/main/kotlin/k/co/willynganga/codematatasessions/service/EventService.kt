@@ -1,6 +1,7 @@
 package k.co.willynganga.codematatasessions.service
 
 import k.co.willynganga.codematatasessions.model.Event
+import k.co.willynganga.codematatasessions.model.EventDto
 import k.co.willynganga.codematatasessions.model.EventsResponse
 import k.co.willynganga.codematatasessions.model.Response
 import k.co.willynganga.codematatasessions.repository.EventsRepository
@@ -13,10 +14,11 @@ class EventService(val eventsRepository: EventsRepository, val imageService: Ima
 
     fun getAllEvents(pageable: Pageable): EventsResponse {
         val page = eventsRepository.findAll(pageable)
+        val eventsDto = page.content.map { EventDto(it) }.sortedByDescending { it.startTime }
         return EventsResponse(
             page.totalPages,
             page.number,
-            page.content
+            eventsDto
         )
     }
 
