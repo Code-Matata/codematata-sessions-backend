@@ -35,6 +35,7 @@ internal class EventImageUrlServiceTest {
             LocalDateTime.parse("2021-06-08T10:15:30"),
             LocalDateTime.parse("2021-06-08T11:15:30"),
             "meet.google.com/kdj-jkxm-ntx",
+            "123456789",
             "Windows, Mac, or Linux OS."
         )
 

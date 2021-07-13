@@ -10,7 +10,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class EventService(val eventsRepository: EventsRepository, val imageService: ImageService) {
+class EventService(
+    private val eventsRepository: EventsRepository,
+    private val imageService: ImageService
+) {
 
     fun getAllEvents(pageable: Pageable): EventsResponse {
         val page = eventsRepository.findAll(pageable)

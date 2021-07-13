@@ -119,6 +119,7 @@ class MainController(
         @RequestParam startTime: String,
         @RequestParam endTime: String,
         @RequestParam meetUrl: String,
+        @RequestParam eventUrl: String,
         @RequestParam prerequisites: String,
         @RequestParam username: String
     ): Response {
@@ -130,6 +131,7 @@ class MainController(
                 LocalDateTime.parse(startTime.trim()),
                 LocalDateTime.parse(endTime.trim()),
                 meetUrl,
+                eventUrl,
                 prerequisites,
                 instructor = it
             )

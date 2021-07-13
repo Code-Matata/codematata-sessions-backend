@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-open class RecordingService(
+class RecordingService(
     private val repository: RecordingsRepository,
     private val imageService: ImageService
 ) {

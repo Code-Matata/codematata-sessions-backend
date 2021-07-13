@@ -10,6 +10,7 @@ open class Event(
     open val startTime: LocalDateTime,
     open val endTime: LocalDateTime,
     open val meetUrl: String,
+    open val eventId: String,
     open val prerequisites: String,
     @OneToOne(
         mappedBy = "event",
