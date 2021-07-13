@@ -22,7 +22,7 @@ class EventService(val eventsRepository: EventsRepository, val imageService: Ima
         )
     }
 
-    fun getEvent(id: Long): Event? = eventsRepository.findById(id).get()
+    fun getEvent(id: Long): Event? = eventsRepository.findById(id).orElse(null)
 
     fun saveEvent(event: Event): Response {
         eventsRepository.saveAndFlush(event)

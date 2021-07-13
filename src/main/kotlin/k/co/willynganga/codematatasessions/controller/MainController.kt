@@ -142,7 +142,12 @@ class MainController(
     }
 
     @GetMapping("/event/{id}")
-    fun getEventById(@PathVariable id: Long): Event? = eventService.getEvent(id)
+    fun getEventById(@PathVariable id: Long): EventDto? {
+        eventService.getEvent(id)?.let {
+            return EventDto(it)
+        }
+        return null
+    }
 
     @DeleteMapping("/event/delete/{id}")
     fun deleteEventById(@PathVariable id: Long): Response = eventService.deleteEvent(id)
