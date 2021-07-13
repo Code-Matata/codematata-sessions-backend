@@ -127,8 +127,8 @@ class MainController(
             val event = Event(
                 title,
                 description,
-                LocalDateTime.parse(startTime),
-                LocalDateTime.parse(endTime),
+                LocalDateTime.parse(startTime.trim()),
+                LocalDateTime.parse(endTime.trim()),
                 meetUrl,
                 prerequisites,
                 instructor = it
