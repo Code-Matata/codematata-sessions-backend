@@ -9,6 +9,7 @@ class EventDto(event: Event) {
     val startTime = event.startTime
     val endTime = event.endTime
     val meetUrl = event.meetUrl
+    val eventId = event.eventId
     val prerequisites = event.prerequisites
     val date = Date(event.startTime.dayOfMonth.toString(), event.startTime.monthShortForm())
     val imageUrl = event.imageUrl
